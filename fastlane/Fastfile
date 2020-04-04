@@ -1,0 +1,25 @@
+default_platform(:android)
+
+platform :android do
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "test")
+  end
+
+  desc "Submit a new Alpha App Bundle to Alpha Track in Google Play Console"
+  lane :alpha do
+        properties = {
+                "android.injected.signing.store.file" => "keystore.jks",
+                "android.injected.signing.store.password" => SENHA DA KEY STORE,
+                "android.injected.signing.key.alias" => ALIAS DA KEY STORE,
+                "android.injected.signing.key.password" => SENHA DO ALIAS DA KEY STORE,
+            }
+
+        gradle(
+              task: 'bundleStaging',
+              build_type: 'Release',
+              properties: properties)
+
+        supply(skip_upload_apk: true, track:"alpha")
+  end
+end
